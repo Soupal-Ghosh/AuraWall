@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AuraWall</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="wrapHeader">
+        <div class="Name">
+          <h1>AuraWall</h1>
+        </div>
+        <div class="search-bar">
+          <input
+            id="searchInput"
+            type="text"
+            placeholder="Search for Wallpapers..."
+          />
+        </div>
+        <div class="AIcreate">
+          <button id="aiCreateBtn" class="slice">
+            <span class="text">Create With AI !!</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="grid" id="wallpaperGrid"></div>
+    </main>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true">
+      <span class="close" onclick="closeLightbox()">
+        <img class="close" src="x.png" alt="Close" />
+      </span>
+
+      <span class="arrow left" onclick="prevImage()">❮</span>
+
+      <div class="lightbox-content">
+        <img id="lightboxImg" src="" alt="Wallpaper" />
+        <div class="AIcreate">
+          <button id="aiCreateBtn" class="slice">
+            <span class="text">Download</span>
+          </button>
+        </div>
+      </div>
+
+      <span class="arrow right" onclick="nextImage()">❯</span>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

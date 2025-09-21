@@ -1,0 +1,273 @@
+/* Global */
+body {
+  font-family: Arial, sans-serif;
+  background: #111;
+  color: white;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+header {
+  padding: 20px;
+  background: #222;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+button {
+  margin: 5px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #444;
+  color: white;
+  font-size: 16px;
+}
+button:hover {
+  background: #666;
+}
+/* AI Create button specific */
+.slice {
+  --c1: #202020;
+  --c2: #f6b213;
+  --size-letter: 16px;
+  padding: 0.5em 1em;
+  font-size: var(--size-letter);
+
+  background-color: transparent;
+  border: calc(var(--size-letter) / 6) solid var(--c2);
+  border-radius: 0.2em;
+  cursor: pointer;
+
+  overflow: hidden;
+  position: relative;
+  transition: 300ms cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+.slice > .text {
+  font-weight: 700;
+  color: var(--c2);
+  position: relative;
+  z-index: 1;
+  transition: color 700ms cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+.slice::after {
+  content: "";
+  width: 0;
+  height: calc(300% + 1em);
+  position: absolute;
+  inset: 50%;
+  translate: -50% -50%;
+  rotate: 30deg;
+  background-color: var(--c2);
+  transition: 1000ms cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+.slice:hover > .text {
+  color: var(--c1);
+}
+
+.slice:hover::after {
+  width: calc(120% + 1em);
+}
+
+.slice:active {
+  scale: 0.98;
+  filter: brightness(0.9);
+}
+
+/* Header styling */
+.wrapHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap; /* allow wrapping on small screens */
+  gap: 10px;
+}
+
+.Name h1 {
+  font-size: clamp(20px, 5vw, 32px);
+}
+
+#searchInput {
+  border: solid #927fe7;
+  border-radius: 12px;
+  width: 50vw;
+  height: 5vh;
+  padding: 0 10px;
+}
+
+/* Grid gallery */
+.grid {
+  column-count: 3;
+  column-gap: 10px;
+  padding: 20px;
+}
+
+.grid img {
+  width: 100%;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  display: block;
+  transition: transform 0.2s;
+}
+
+.grid img:hover {
+  transform: scale(1.05);
+}
+
+/* Lightbox overlay */
+#lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 10px;
+  box-sizing: border-box;
+}
+#lightbox.hidden {
+  display: none;
+}
+
+/* Image styling */
+#lightboxImg {
+  max-height: 70vh;       /* maximum height */
+  max-width: 90vw;        /* max width relative to viewport */
+  width: auto;            /* keep aspect ratio */
+  height: auto;
+  border-radius: 10px;
+  transition: opacity 0.4s ease-in-out;
+  opacity: 1;
+}
+#lightboxImg.fade {
+  opacity: 0;
+}
+
+/* Close button */
+#lightbox .close {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  color: white;
+  z-index: 2100;
+}
+
+/* Navigation arrows */
+#lightbox .prev,
+#lightbox .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  font-size: 40px;
+  color: white;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 50%;
+  user-select: none;
+  transform: translateY(-50%);
+  z-index: 2100;
+}
+/* Lightbox navigation arrows (keep 5vh away from image) */
+#lightbox .prev {
+  left: 5vh; /* distance from left edge */
+}
+
+#lightbox .next {
+  right: 5vh; /* distance from right edge */
+}
+.lightbox-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;  /* stack image + button vertically */
+  align-items: center;     /* center horizontally */
+  gap: 10px;               /* spacing between image and button */
+}
+
+/* -------- Responsive Rules -------- */
+@media (max-width: 1024px) {
+  .grid {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  #lightboxImg {
+    max-width: 95%;
+    max-height: 70%;
+  }
+
+  #lightbox .close {
+    font-size: 28px;
+    top: 10px;
+    right: 15px;
+  }
+
+  #lightbox .prev,
+  #lightbox .next {
+    font-size: 28px;
+    padding: 6px 10px;
+  }
+
+  #searchInput {
+    width: 70vw;
+    height: 40px;
+  }
+
+  .wrapHeader {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .AIcreate button {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    column-count: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  #lightboxImg {
+    max-width: 100%;
+    max-height: 65%;
+  }
+
+  #lightbox .close {
+    font-size: 24px;
+  }
+
+  #lightbox .prev,
+  #lightbox .next {
+    font-size: 24px;
+    padding: 5px 8px;
+  }
+
+  #searchInput {
+    width: 90vw;
+  }
+
+  button {
+    padding: 12px 18px;
+    font-size: 14px;
+  }
+}

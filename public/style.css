@@ -1,4 +1,8 @@
-/* Global */
+/* ===========================
+   Global
+   =========================== */
+* { box-sizing: border-box; }
+
 body {
   font-family: Arial, sans-serif;
   background: #111;
@@ -6,55 +10,109 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* ===========================
+   Header
+   =========================== */
 header {
-  padding: 20px;
+  padding: 12px 20px;
   background: #222;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
+/* Use CSS Grid so we can rearrange easily on mobile */
+.wrapHeader {
+  display: grid;
+  grid-template-columns: auto 1fr auto; /* name | search | button */
+  align-items: center;
+  gap: 12px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Brand */
+.Name h1 {
+  font-size: clamp(18px, 4vw, 28px);
+  margin: 0;
+  color: #f6b213;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+/* Search bar container (centers input inside the middle column) */
+.search-bar {
+  justify-self: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+/* Search input */
+#searchInput {
+  border: 2px solid #927fe7;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;        /* default cap for large screens */
+  height: 40px;
+  padding: 0 12px;
+  font-size: 14px;
+  color: #fff;
+  background: #1b1b1b;
+  outline: none;
+  transition: box-shadow .25s ease, border-color .25s ease, transform .12s ease;
+}
+#searchInput::placeholder { color: #bdb8ff; opacity: .8; }
+#searchInput:focus {
+  border-color: #f6b213;
+  box-shadow: 0 0 8px rgba(246,178,19,0.2);
+  transform: translateY(-1px);
+}
+
+/* ===========================
+   Buttons
+   =========================== */
 button {
-  margin: 5px;
+  margin: 0;
   padding: 10px 20px;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   background: #444;
   color: white;
   font-size: 16px;
+  line-height: 1;
 }
-button:hover {
-  background: #666;
-}
-/* AI Create button specific */
+button:hover { background: #666; }
+
+/* AI Create button specific (fancy slice) */
 .slice {
   --c1: #202020;
   --c2: #f6b213;
   --size-letter: 16px;
-  padding: 0.5em 1em;
+  padding: 0.45em 0.9em;
   font-size: var(--size-letter);
 
   background-color: transparent;
   border: calc(var(--size-letter) / 6) solid var(--c2);
-  border-radius: 0.2em;
+  border-radius: 0.35em;
   cursor: pointer;
 
   overflow: hidden;
   position: relative;
   transition: 300ms cubic-bezier(0.83, 0, 0.17, 1);
 }
-
 .slice > .text {
   font-weight: 700;
   color: var(--c2);
   position: relative;
   z-index: 1;
-  transition: color 700ms cubic-bezier(0.83, 0, 0.17, 1);
+  transition: color 500ms cubic-bezier(0.83, 0, 0.17, 1);
 }
-
 .slice::after {
   content: "";
   width: 0;
@@ -64,52 +122,23 @@ button:hover {
   translate: -50% -50%;
   rotate: 30deg;
   background-color: var(--c2);
-  transition: 1000ms cubic-bezier(0.83, 0, 0.17, 1);
+  transition: 700ms cubic-bezier(0.83, 0, 0.17, 1);
 }
+.slice:hover > .text { color: var(--c1); }
+.slice:hover::after { width: calc(120% + 1em); }
+.slice:active { transform: scale(0.98); filter: brightness(0.95); }
 
-.slice:hover > .text {
-  color: var(--c1);
-}
+/* AIcreate wrapper alignment */
+.AIcreate { justify-self: end; }
 
-.slice:hover::after {
-  width: calc(120% + 1em);
-}
-
-.slice:active {
-  scale: 0.98;
-  filter: brightness(0.9);
-}
-
-/* Header styling */
-.wrapHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  flex-wrap: wrap; /* allow wrapping on small screens */
-  gap: 10px;
-}
-
-.Name h1 {
-  font-size: clamp(20px, 5vw, 32px);
-}
-
-#searchInput {
-  border: solid #927fe7;
-  border-radius: 12px;
-  width: 50vw;
-  height: 5vh;
-  padding: 0 10px;
-}
-
-/* Grid gallery */
+/* ===========================
+   Gallery + Lightbox (kept from your previous)
+   =========================== */
 .grid {
   column-count: 3;
   column-gap: 10px;
   padding: 20px;
 }
-
 .grid img {
   width: 100%;
   margin-bottom: 10px;
@@ -117,19 +146,14 @@ button:hover {
   display: block;
   transition: transform 0.2s;
 }
-
-.grid img:hover {
-  transform: scale(1.05);
-}
+.grid img:hover { transform: scale(1.05); }
 
 /* Lightbox overlay */
 #lightbox {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.95);
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.95);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -137,23 +161,19 @@ button:hover {
   padding: 10px;
   box-sizing: border-box;
 }
-#lightbox.hidden {
-  display: none;
-}
+#lightbox.hidden { display: none; }
 
 /* Image styling */
 #lightboxImg {
-  max-height: 70vh;       /* maximum height */
-  max-width: 90vw;        /* max width relative to viewport */
-  width: auto;            /* keep aspect ratio */
+  max-height: 70vh;
+  max-width: 90vw;
+  width: auto;
   height: auto;
   border-radius: 10px;
   transition: opacity 0.4s ease-in-out;
   opacity: 1;
 }
-#lightboxImg.fade {
-  opacity: 0;
-}
+#lightboxImg.fade { opacity: 0; }
 
 /* Close button */
 #lightbox .close {
@@ -175,7 +195,7 @@ button:hover {
   top: 50%;
   font-size: 40px;
   color: white;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0,0,0,0.4);
   border: none;
   padding: 8px 12px;
   border-radius: 50%;
@@ -183,91 +203,91 @@ button:hover {
   transform: translateY(-50%);
   z-index: 2100;
 }
-/* Lightbox navigation arrows (keep 5vh away from image) */
-#lightbox .prev {
-  left: 5vh; /* distance from left edge */
-}
-
-#lightbox .next {
-  right: 5vh; /* distance from right edge */
-}
+#lightbox .prev { left: 5vh; }
+#lightbox .next { right: 5vh; }
 .lightbox-content {
   position: relative;
   display: flex;
-  flex-direction: column;  /* stack image + button vertically */
-  align-items: center;     /* center horizontally */
-  gap: 10px;               /* spacing between image and button */
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
 }
 
-/* -------- Responsive Rules -------- */
-@media (max-width: 1024px) {
-  .grid {
-    column-count: 2;
-  }
+/* ===========================
+   Responsive rules
+   =========================== */
+
+/* Tablets: make search a bit wider so it fills middle space nicely */
+@media (min-width: 768px) and (max-width: 1200px) {
+  #searchInput { max-width: 700px; }
+  .grid { column-count: 2; }
 }
 
+/* Desktop fallback: ensure 3 columns on wide screens */
+@media (min-width: 1201px) {
+  .grid { column-count: 3; }
+}
+
+/* Phones: stack header rows so name + button are on top & search below */
 @media (max-width: 768px) {
-  #lightboxImg {
-    max-width: 95%;
-    max-height: 70%;
-  }
-
-  #lightbox .close {
-    font-size: 28px;
-    top: 10px;
-    right: 15px;
-  }
-
-  #lightbox .prev,
-  #lightbox .next {
-    font-size: 28px;
-    padding: 6px 10px;
-  }
-
-  #searchInput {
-    width: 70vw;
-    height: 40px;
-  }
-
+  /* make header single-column layout */
   .wrapHeader {
-    flex-direction: column;
-    text-align: center;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 8px;
+    align-items: center;
   }
 
-  .AIcreate button {
+  /* place name and button on same top row */
+  .Name {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: start;
+    align-self: center;
+  }
+
+  .AIcreate {
+    grid-column: 1;
+    grid-row: 1;
+    justify-self: end;
+    align-self: center;
+  }
+
+  /* search becomes full-width on second row */
+  .search-bar {
+    grid-column: 1;
+    grid-row: 2;
     width: 100%;
-    max-width: 300px;
-  }
-}
-
-@media (max-width: 600px) {
-  .grid {
-    column-count: 1;
-  }
-}
-
-@media (max-width: 480px) {
-  #lightboxImg {
-    max-width: 100%;
-    max-height: 65%;
-  }
-
-  #lightbox .close {
-    font-size: 24px;
-  }
-
-  #lightbox .prev,
-  #lightbox .next {
-    font-size: 24px;
-    padding: 5px 8px;
+    justify-content: center;
+    margin-top: 6px;
   }
 
   #searchInput {
-    width: 90vw;
+    width: 95%;
+    max-width: none;
+    height: 42px;
+    font-size: 15px;
   }
 
-  button {
-    padding: 12px 18px;
+  /* keep lightbox controls slightly smaller */
+  #lightbox .prev, #lightbox .next { font-size: 28px; padding: 6px 10px; }
+  #lightbox .close { font-size: 28px; top: 10px; right: 15px; }
+
+  /* shrink AI button a bit to help it fit beside the title */
+  .slice {
     font-size: 14px;
+    padding: 8px 12px;
   }
 }
+
+/* Very small phones */
+@media (max-width: 480px) {
+  #searchInput { width: 95%; height: 36px; font-size: 13px; }
+  .Name h1 { font-size: 20px; }
+  .slice { font-size: 13px; padding: 7px 10px; }
+  .grid { column-count: 1; padding: 12px; }
+  #lightboxImg { max-width: 100%; max-height: 65%; }
+}
+/* ===========================
+   End of style.css
+   =========================== */

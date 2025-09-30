@@ -1,5 +1,5 @@
 {
-  "type":"module",
+  "type": "module",
   "name": "ss",
   "version": "1.0.0",
   "main": "script.js",
@@ -14,7 +14,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "nekosapi": "^0.6.4",
     "node-fetch": "^3.3.2"
   }
-  
 }

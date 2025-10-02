@@ -10,6 +10,8 @@ body {
   margin: 0;
   padding: 0;
   text-align: center;
+  cursor: url("cursor_new.png"), pointer; /* Custom cursor fallback */
+  /*cursor: url('cursor_1_.cur') 4 4, pointer; /* Custom cursor */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

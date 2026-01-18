@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AuraWall – AI Create</title>
+    <link rel="stylesheet" href="chat.css" />
+  </head>
+  <body>
+    <!-- Top Bar -->
+    <header class="topbar">
+      <div class="logo">AuraWall</div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="chat-area">
+      <!-- IMAGE MESSAGE TEMPLATE -->
+      <template id="imageMessageTemplate">
+        <div class="message image">
+          <img class="ai-image" src="" alt="Generated wallpaper" />
+
+          <div class="image-actions hidden">
+            <button class="button">
+              <span class="button_lg">
+                <span class="button_sl"></span>
+                <span class="button_text">Download Now</span>
+              </span>
+            </button>
+            <button class="button">
+              <span class="button_lg">
+                <span class="button_sl"></span>
+                <span class="button_text">Share</span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </template>
+    </main>
+
+    <!-- Prompt Input -->
+    <footer class="prompt-bar">
+      <textarea
+        id="promptInput"
+        placeholder="Describe the wallpaper you want..."
+      ></textarea>
+      <button id="generateBtn">Generate</button>
+    </footer>
+
+    <script src="chat.js"></script>
+  </body>
+</html>

@@ -8,6 +8,20 @@ let currentIndex = 0;
 let currentQuery = null;
 let isLoading = false;
 
+//create with ai btn logic 
+const aiCreateBtn = document.getElementById("aiCreateBtn");
+document.addEventListener("DOMContentLoaded", () => {
+  if (!aiCreateBtn) {
+    console.error("aicreatebtn not found");
+    return;
+  }
+
+  aiCreateBtn.addEventListener("click", () => {
+    window.location.href = "chat.html";
+  });
+});
+
+
 // -------- Fetch images from backend ----------
 async function fetchImagesFromBackend(query, page = 1) {
   const url = `/api/images?q=${encodeURIComponent(query || "")}&page=${page}`;

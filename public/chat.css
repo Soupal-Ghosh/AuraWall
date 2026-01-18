@@ -1,0 +1,335 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: #111;
+  margin: 0;
+  color: #ffffff;
+  cursor: url("cursor_new.png"), pointer; /* Custom cursor fallback */
+  /*cursor: url('cursor_1_.cur') 4 4, pointer; /* Custom cursor */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Top Bar */
+.topbar {
+  height: 60px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #262626;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #f5b301;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+/* Main Chat Area */
+.chat-area {
+  height: calc(100vh - 60px); /* full height minus top bar */
+  padding: 24px;
+  padding-bottom: 120px; /* space for prompt bar */
+
+  overflow-y: auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.message {
+  max-width: 70%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: #8b7cf6;
+  color: #0f0f0f;
+}
+
+.message.ai {
+  align-self: flex-start;
+  background: #1f1f1f;
+  color: #ffffff;
+  border: 1px solid #2a2a2a;
+}
+/* Image messages (AI output) */
+.message.image {
+  align-self: flex-start;
+  background: transparent;
+  padding: 0;
+  max-width: 70%;
+}
+
+.message.image img {
+  width: 100%;
+  max-width: 512px;
+  height: auto;
+
+  border-radius: 16px;
+  border: 1px solid #2a2a2a;
+
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  display: block;
+}
+/* Image actions panel */
+.image-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 12px;
+}
+
+.image-actions.hidden {
+  display: none;
+}
+
+.image-actions button {
+  background: #1f1f1f;
+  color: #ffffff;
+  border: 1px solid #2a2a2a;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.image-actions button:hover {
+  background: #8b7cf6;
+  color: #0f0f0f;
+}
+
+
+.placeholder {
+  text-align: center;
+  color: #6b7280;
+  font-size: 18px;
+}
+
+/* Prompt Bar */
+.prompt-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+
+  padding: 16px;
+  background: #1a1a1a;
+  border-top: 1px solid #262626;
+  z-index: 100;
+}
+
+/* Textarea */
+.prompt-bar textarea {
+  flex: 1;
+
+  min-height: 38px;        /* ⬅️ smaller default */
+  max-height: 160px;
+
+  padding: 8px 12px;
+  background: #0f0f0f;
+
+  border: 2px solid #8b7cf6;
+  border-radius: 12px;
+
+  color: #ffffff;
+  font-size: 14px;
+  line-height: 1.4;
+
+  resize: none;
+  outline: none;
+  overflow-y: auto;
+  transition: height 0.1s ease;
+}
+
+
+
+.prompt-bar textarea::placeholder {
+  color: #6b7280;
+}
+
+.prompt-bar button {
+  width: 120px;
+  background: #f5b301;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  color: #0f0f0f;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.prompt-bar button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(245, 179, 1, 0.35);
+}
+
+/*buttons in prompt bar*/
+/* From Uiverse.io by Mike11jr */ 
+#generateBtn {
+ width: 130px;
+ height: 40px;
+ font-size: 1.1em;
+ cursor: pointer;
+ background-color: #171717;
+ color: #fff;
+ border: none;
+ border-radius: 5px;
+ transition: all .4s;
+}
+
+#generateBtn:hover {
+ border-radius: 5px;
+ transform: translateY(-10px);
+ box-shadow: 0 7px 0 -2px #f85959,
+  0 15px 0 -4px #39a2db,
+  0 16px 10px -3px #39a2db;
+}
+
+#generateBtn:active {
+ transition: all 0.2s;
+ transform: translateY(-5px);
+ box-shadow: 0 2px 0 -2px #f85959,
+  0 8px 0 -4px #39a2db,
+  0 12px 10px -3px #39a2db;
+}
+
+/*download and share buttons below */
+/* From Uiverse.io by mrhyddenn */ 
+.button {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: none;
+  color: #0f1923;
+  cursor: pointer;
+  position: relative;
+  padding: 8px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 14px;
+  transition: all .15s ease;
+}
+
+.button::before,
+.button::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  left: 0;
+  height: calc(50% - 5px);
+  border: 1px solid #000000;
+  transition: all .15s ease;
+}
+
+.button::before {
+  top: 0;
+  border-bottom-width: 0;
+}
+
+.button::after {
+  bottom: 0;
+  border-top-width: 0;
+}
+
+.button:active,
+.button:focus {
+  outline: none;
+}
+
+.button:active::before,
+.button:active::after {
+  right: 3px;
+  left: 3px;
+}
+
+.button:active::before {
+  top: 3px;
+}
+
+.button:active::after {
+  bottom: 3px;
+}
+
+.button_lg {
+  position: relative;
+  display: block;
+  padding: 10px 20px;
+  color: #fff;
+  background-color: #0f1923;
+  overflow: hidden;
+  box-shadow: inset 0px 0px 0px 1px transparent;
+}
+
+.button_lg::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  background-color: #0f1923;
+}
+
+.button_lg::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 4px;
+  height: 4px;
+  background-color: #0f1923;
+  transition: all .2s ease;
+}
+
+.button_sl {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: -1px;
+  left: -8px;
+  width: 0;
+  background-color: #f6b00b;
+  transform: skew(-15deg);
+  transition: all .2s ease;
+}
+
+.button_text {
+  position: relative;
+}
+
+.button:hover {
+  color: #0f1923;
+}
+
+.button:hover .button_sl {
+  width: calc(100% + 15px);
+}
+
+.button:hover .button_lg::after {
+  background-color: #fff;
+}

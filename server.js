@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { pipeline } from "stream";
 import { promisify } from "util";
+import Bytez from "bytez.js";
 
 dotenv.config();
 
@@ -29,6 +30,38 @@ app.get("/", (req, res) => {
 const UNSPLASH_KEY = process.env.UNSPLASH_KEY;
 const PEXELS_KEY = process.env.PEXELS_KEY;
 const PIXABAY_KEY = process.env.PIXABAY_KEY;
+const BYTES_KEY = process.env.BYTES_KEY;  
+
+//bytes 
+const bytez = new Bytez(BYTES_KEY);
+const sdModel = bytez.model("stabilityai/stable-diffusion-xl-base-1.0");
+
+app.post("/api/generate-ai", async (req, res) => {
+  const { prompt } = req.body;
+  if (!prompt) {
+    return res.status(400).json({ error: "Prompt is required" });
+  }
+
+  try {
+    const result = await sdModel.run(prompt);
+
+    console.log("BYTEZ RESULT:", result);
+
+    if (result.error || !result.output) {
+      return res.status(500).json({ error: "AI generation failed" });
+    }
+
+    // output is already a URL
+    res.json({
+      image: result.output
+    });
+
+  } catch (err) {
+    console.error("AI Server Error:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 
 // ---------- Helper functions ----------
 async function fetchJSON(url, headers = {}) {

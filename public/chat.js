@@ -43,14 +43,26 @@ const addImageMessage = (src) => {
   });
 
   // Download
-  downloadBtn.addEventListener("click", () => {
-    const link = document.createElement("a");
-    link.href = src;
-    link.download = "aurawall-ai.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  });
+downloadBtn.addEventListener("click", async () => {
+  try {
+    const response = await fetch(src);
+    const blob = await response.blob();
+
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+
+    a.href = blobUrl;
+    a.download = "aurawall-ai.png";
+    document.body.appendChild(a);
+    a.click();
+
+    document.body.removeChild(a);
+    URL.revokeObjectURL(blobUrl);
+  } catch (err) {
+    console.error("Download failed", err);
+    alert("Failed to download image");
+  }
+});
 
   // Share
   shareBtn.addEventListener("click", async () => {

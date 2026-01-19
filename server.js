@@ -30,9 +30,9 @@ app.get("/", (req, res) => {
 const UNSPLASH_KEY = process.env.UNSPLASH_KEY;
 const PEXELS_KEY = process.env.PEXELS_KEY;
 const PIXABAY_KEY = process.env.PIXABAY_KEY;
-const BYTES_KEY = process.env.BYTES_KEY;  
+const BYTES_KEY = process.env.BYTES_KEY;
 
-//bytes 
+//bytes
 const bytez = new Bytez(BYTES_KEY);
 const sdModel = bytez.model("stabilityai/stable-diffusion-xl-base-1.0");
 
@@ -53,15 +53,24 @@ app.post("/api/generate-ai", async (req, res) => {
 
     // output is already a URL
     res.json({
-      image: result.output
+      image: `/api/proxy-image?url=${encodeURIComponent(result.output)}`,
     });
-
   } catch (err) {
     console.error("AI Server Error:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
 
+app.get("/api/proxy-image", async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).send("Missing url");
+
+  const response = await fetch(url);
+  const buffer = await response.arrayBuffer();
+
+  res.set("Content-Type", "image/png");
+  res.send(Buffer.from(buffer));
+});
 
 // ---------- Helper functions ----------
 async function fetchJSON(url, headers = {}) {
@@ -83,7 +92,7 @@ async function fetchJSON(url, headers = {}) {
 async function fetchUnsplash(query, page = 1, perPage = 30) {
   const url = query
     ? `https://api.unsplash.com/search/photos?query=${encodeURIComponent(
-        query
+        query,
       )}&page=${page}&per_page=${perPage}`
     : `https://api.unsplash.com/photos/random?count=${perPage}`;
 
@@ -109,7 +118,7 @@ async function fetchUnsplash(query, page = 1, perPage = 30) {
 async function fetchPexels(query, perPage = 30) {
   const url = query
     ? `https://api.pexels.com/v1/search?query=${encodeURIComponent(
-        query
+        query,
       )}&per_page=${perPage}`
     : `https://api.pexels.com/v1/curated?per_page=${perPage}`;
 
@@ -127,7 +136,7 @@ async function fetchPexels(query, perPage = 30) {
 // ---------- Pixabay ----------
 async function fetchPixabay(query, perPage = 30) {
   const url = `https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(
-    query || "wallpaper"
+    query || "wallpaper",
   )}&image_type=photo&per_page=${perPage}`;
 
   const data = await fetchJSON(url);
@@ -174,9 +183,12 @@ app.get("/download", async (req, res) => {
     // Set headers to trigger download
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="${filename || "wallpaper.jpg"}"`
+      `attachment; filename="${filename || "wallpaper.jpg"}"`,
     );
-    res.setHeader("Content-Type", response.headers.get("content-type") || "image/jpeg");
+    res.setHeader(
+      "Content-Type",
+      response.headers.get("content-type") || "image/jpeg",
+    );
 
     // Stream the image directly to client
     await streamPipeline(response.body, res);

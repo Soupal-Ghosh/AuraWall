@@ -24,48 +24,48 @@ const addTextMessage = (text, sender) => {
 
 // ---------- Image message (TEMPLATE-BASED) ----------
 const addImageMessage = (src) => {
+  if (!src) {
+    console.error("Image src is missing");
+    return;
+  }
+
   const clone = imageTemplate.content.cloneNode(true);
 
-  const wrapper = clone.querySelector(".message.image");
   const img = clone.querySelector(".ai-image");
   const actions = clone.querySelector(".image-actions");
-
-  // Buttons (match your HTML)
-  const buttons = actions.querySelectorAll("button");
-  const downloadBtn = buttons[0];
+  const downloadBtn = actions.querySelector("button");
 
   img.src = src;
 
-  // Toggle action panel
+  // Toggle actions on image click
   img.addEventListener("click", () => {
     actions.classList.toggle("hidden");
   });
 
-  // Download
-downloadBtn.addEventListener("click", async () => {
-  try {
-    const response = await fetch(src);
-    const blob = await response.blob();
+  // Download image as FILE (not new tab)
+  downloadBtn.addEventListener("click", async () => {
+    try {
+      const response = await fetch(src);
+      const blob = await response.blob();
 
-    const blobUrl = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+      const blobUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
 
-    a.href = blobUrl;
-    a.download = "aurawall-ai.png";
-    document.body.appendChild(a);
-    a.click();
+      a.href = blobUrl;
+      a.download = "aurawall-ai.png";
+      document.body.appendChild(a);
+      a.click();
 
-    document.body.removeChild(a);
-    URL.revokeObjectURL(blobUrl);
-  } catch (err) {
-    console.error("Download failed", err);
-    alert("Failed to download image");
-  }
-});
+      document.body.removeChild(a);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Download failed", err);
+      alert("Failed to download image");
+    }
+  });
 
-
-
-  chatArea.appendChild(wrapper);
+  // ✅ Append the TEMPLATE CLONE (not inner nodes)
+  chatArea.appendChild(clone);
   chatArea.scrollTop = chatArea.scrollHeight;
 };
 
@@ -91,7 +91,6 @@ generateBtn.addEventListener("click", async () => {
     loadingMsg.remove();
 
     addImageMessage(data.image);
-
   } catch (err) {
     console.error(err);
     loadingMsg.textContent = "Failed to generate image.";

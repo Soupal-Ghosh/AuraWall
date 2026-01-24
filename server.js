@@ -5,8 +5,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
-import { pipeline } from "stream";
-import { promisify } from "util";
 import Bytez from "bytez.js";
 
 dotenv.config();
@@ -32,14 +30,43 @@ const PEXELS_KEY = process.env.PEXELS_KEY;
 const PIXABAY_KEY = process.env.PIXABAY_KEY;
 const BYTES_KEY = process.env.BYTES_KEY;
 
-//bytes
-const bytez = new Bytez(BYTES_KEY);
-const sdModel = bytez.model("stabilityai/stable-diffusion-xl-base-1.0");
+// Bytez: only init when BYTES_KEY is set
+let sdModel = null;
+if (BYTES_KEY) {
+  const bytez = new Bytez(BYTES_KEY);
+  sdModel = bytez.model("stabilityai/stable-diffusion-xl-base-1.0");
+}
+
+/** Reject URLs that could be used for SSRF (localhost, private IPs). */
+function isUrlSafe(urlString) {
+  try {
+    const u = new URL(urlString);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return false;
+    const host = u.hostname.toLowerCase();
+    if (host === "localhost" || host === "") return false;
+    if (host === "::1") return false;
+    const ipv4 = /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/.exec(host);
+    if (ipv4) {
+      const [a, b] = [parseInt(ipv4[1], 10), parseInt(ipv4[2], 10)];
+      if (a === 127) return false;
+      if (a === 10) return false;
+      if (a === 172 && b >= 16 && b <= 31) return false;
+      if (a === 192 && b === 168) return false;
+      if (a === 169 && b === 254) return false;
+    }
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 app.post("/api/generate-ai", async (req, res) => {
   const { prompt } = req.body;
   if (!prompt) {
     return res.status(400).json({ error: "Prompt is required" });
+  }
+  if (!sdModel) {
+    return res.status(503).json({ error: "AI generation not configured (BYTES_KEY missing)" });
   }
 
   try {
@@ -65,6 +92,7 @@ app.post("/api/generate-ai", async (req, res) => {
 app.get("/api/proxy-image", async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).send("Missing url");
+  if (!isUrlSafe(String(url))) return res.status(400).send("Invalid or disallowed url");
 
   try {
     const response = await fetch(url);
@@ -182,20 +210,22 @@ app.get("/api/images", async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-// ---------- NEW Download Route ----------
-const streamPipeline = promisify(pipeline);
-
+// ---------- Download Route ----------
 app.get("/download", async (req, res) => {
   const { url, filename } = req.query;
   if (!url) return res.status(400).send("Image URL is required");
+  if (!isUrlSafe(String(url))) return res.status(400).send("Invalid or disallowed url");
 
   try {
     const response = await fetch(url);
     if (!response.ok) return res.status(500).send("Failed to fetch image");
 
+    const safeName = (filename || "wallpaper.png")
+      .replace(/[^a-zA-Z0-9_\-.]/g, "_")
+      .slice(0, 200);
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="${filename || "wallpaper.png"}"`
+      `attachment; filename="${safeName}"`
     );
     res.setHeader(
       "Content-Type",

@@ -3,73 +3,76 @@ const generateBtn = document.getElementById("generateBtn");
 const chatArea = document.querySelector(".chat-area");
 const imageTemplate = document.getElementById("imageMessageTemplate");
 
-// ---------- Auto resize ----------
+/* ---------- Auto resize ---------- */
 const autoResize = () => {
   textarea.style.height = "auto";
   textarea.style.height = textarea.scrollHeight + "px";
 };
-
 textarea.addEventListener("input", autoResize);
 
-// ---------- Text message ----------
+/* ---------- Text message ---------- */
 const addTextMessage = (text, sender) => {
   const msg = document.createElement("div");
   msg.className = `message ${sender}`;
   msg.textContent = text;
-
   chatArea.appendChild(msg);
   chatArea.scrollTop = chatArea.scrollHeight;
   return msg;
 };
 
-// ---------- Image message (TEMPLATE-BASED) ----------
+/* ---------- Image message (TEMPLATE-BASED) ---------- */
 const addImageMessage = (src) => {
   if (!src) {
-    console.error("Image src is missing");
+    console.error("❌ Image src missing");
     return;
   }
 
-  const clone = imageTemplate.content.cloneNode(true);
+  // Clone template
+  const fragment = imageTemplate.content.cloneNode(true);
 
-  const img = clone.querySelector(".ai-image");
-  const actions = clone.querySelector(".image-actions");
-  const downloadBtn = actions.querySelector("button");
+  const wrapper = fragment.querySelector(".message.image");
+  const img = fragment.querySelector(".ai-image");
+  const actions = fragment.querySelector(".image-actions");
+
+  // IMPORTANT: select buttons explicitly
+  const downloadBtn = actions.querySelector(".download-btn");
+  const shareBtn = actions.querySelector(".share-btn");
 
   img.src = src;
 
-  // Toggle actions on image click
+  /* Toggle action panel */
   img.addEventListener("click", () => {
     actions.classList.toggle("hidden");
   });
 
-  // Download image as FILE (not new tab)
-  downloadBtn.addEventListener("click", async () => {
+  /* Download as FILE */
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", async (e) => {
+    e.stopPropagation();
     try {
-      const response = await fetch(src);
-      const blob = await response.blob();
+      const res = await fetch(src);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
 
-      const blobUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
-
-      a.href = blobUrl;
+      a.href = url;
       a.download = "aurawall-ai.png";
       document.body.appendChild(a);
       a.click();
 
       document.body.removeChild(a);
-      URL.revokeObjectURL(blobUrl);
+      URL.revokeObjectURL(url);
     } catch (err) {
       console.error("Download failed", err);
-      alert("Failed to download image");
+      alert("Download failed");
     }
   });
+  }
 
-  // ✅ Append the TEMPLATE CLONE (not inner nodes)
-  chatArea.appendChild(clone);
-  chatArea.scrollTop = chatArea.scrollHeight;
+  /* (Optional) Share image file - shareBtn if present */
 };
 
-// ---------- Generate ----------
+/* ---------- Generate ---------- */
 generateBtn.addEventListener("click", async () => {
   const prompt = textarea.value.trim();
   if (!prompt) return;
@@ -84,12 +87,16 @@ generateBtn.addEventListener("click", async () => {
     const res = await fetch("/api/generate-ai", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({ prompt }),
     });
 
     const data = await res.json();
     loadingMsg.remove();
 
+    if (!res.ok || data.error || !data.image) {
+      addTextMessage(data?.error || "Failed to generate image.", "ai");
+      return;
+    }
     addImageMessage(data.image);
   } catch (err) {
     console.error(err);

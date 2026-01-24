@@ -2,7 +2,6 @@ const grid = document.getElementById("wallpaperGrid");
 const searchInput = document.getElementById("searchInput");
 
 let page = 1;
-const batchSize = 100; // Number of images to fetch per batch from backend
 let imagesList = [];
 let currentIndex = 0;
 let currentQuery = null;
@@ -133,29 +132,30 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "ArrowLeft") prevImage();
   if (e.key === "Escape") closeLightbox();
 });
-//download image 
+//download image
 const downloadBtn = document.querySelector("#lightbox .slice");
+if (downloadBtn) {
+  downloadBtn.addEventListener("click", () => {
+    if (!imagesList[currentIndex]) return;
 
-downloadBtn.addEventListener("click", () => {
-  if (!imagesList[currentIndex]) return;
+    const imgObj = imagesList[currentIndex];
 
-  const imgObj = imagesList[currentIndex];
-  
-  // Use alt text or fallback for filename
-  let filename = "wallpaper";
-  if (imgObj.alt) {
-    filename = imgObj.alt.trim().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_-]/g, "");
-  }
+    // Use alt text or fallback for filename
+    let filename = "wallpaper";
+    if (imgObj.alt) {
+      filename = imgObj.alt.trim().replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_-]/g, "");
+    }
 
-  // Preserve file extension
-  if (!filename.endsWith(".jpg") && !filename.endsWith(".png")) {
-    const extension = imgObj.full.split(".").pop().split(/\#|\?/)[0];
-    filename += "." + extension;
-  }
+    // Preserve file extension
+    if (!filename.endsWith(".jpg") && !filename.endsWith(".png")) {
+      const extension = imgObj.full.split(".").pop().split(/\#|\?/)[0];
+      filename += "." + extension;
+    }
 
-  // Use backend to download the image securely
-  window.location.href = `/download?url=${encodeURIComponent(imgObj.full)}&filename=${filename}`;
-});
+    // Use backend to download the image securely
+    window.location.href = `/download?url=${encodeURIComponent(imgObj.full)}&filename=${encodeURIComponent(filename)}`;
+  });
+}
 
 
 

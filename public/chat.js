@@ -33,7 +33,6 @@ const addImageMessage = (src) => {
   // Buttons (match your HTML)
   const buttons = actions.querySelectorAll("button");
   const downloadBtn = buttons[0];
-  const shareBtn = buttons[1] || buttons[2];
 
   img.src = src;
 
@@ -64,18 +63,7 @@ downloadBtn.addEventListener("click", async () => {
   }
 });
 
-  // Share
-  shareBtn.addEventListener("click", async () => {
-    if (navigator.share) {
-      await navigator.share({
-        title: "AuraWall AI Wallpaper",
-        url: src
-      });
-    } else {
-      await navigator.clipboard.writeText(src);
-      alert("Image link copied!");
-    }
-  });
+
 
   chatArea.appendChild(wrapper);
   chatArea.scrollTop = chatArea.scrollHeight;

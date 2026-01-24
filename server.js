@@ -47,7 +47,8 @@ app.post("/api/generate-ai", async (req, res) => {
 
     console.log("BYTEZ RESULT:", result);
 
-    if (result.error || !result.output) {
+    if (!result || result.error || typeof result.output !== "string") {
+      console.error("Invalid Bytez response:", result);
       return res.status(500).json({ error: "AI generation failed" });
     }
 
@@ -65,11 +66,24 @@ app.get("/api/proxy-image", async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).send("Missing url");
 
-  const response = await fetch(url);
-  const buffer = await response.arrayBuffer();
+  try {
+    const response = await fetch(url);
 
-  res.set("Content-Type", "image/png");
-  res.send(Buffer.from(buffer));
+    if (!response.ok) {
+      console.error("Proxy fetch failed:", response.status);
+      return res.status(500).send("Failed to fetch image");
+    }
+
+    res.setHeader(
+      "Content-Type",
+      response.headers.get("content-type") || "image/png",
+    );
+
+    response.body.pipe(res);
+  } catch (err) {
+    console.error("Proxy Error:", err);
+    res.status(500).send("Proxy error");
+  }
 });
 
 // ---------- Helper functions ----------
@@ -176,27 +190,25 @@ app.get("/download", async (req, res) => {
   if (!url) return res.status(400).send("Image URL is required");
 
   try {
-    // Fetch the image from the original source
     const response = await fetch(url);
     if (!response.ok) return res.status(500).send("Failed to fetch image");
 
-    // Set headers to trigger download
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="${filename || "wallpaper.jpg"}"`,
+      `attachment; filename="${filename || "wallpaper.png"}"`
     );
     res.setHeader(
       "Content-Type",
-      response.headers.get("content-type") || "image/jpeg",
+      response.headers.get("content-type") || "image/png"
     );
 
-    // Stream the image directly to client
-    await streamPipeline(response.body, res);
+    response.body.pipe(res);
   } catch (err) {
     console.error("Download Error:", err);
     res.status(500).send("Error downloading image");
   }
 });
+
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });

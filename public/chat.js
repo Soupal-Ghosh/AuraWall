@@ -48,28 +48,30 @@ const addImageMessage = (src) => {
   /* Download as FILE */
   if (downloadBtn) {
     downloadBtn.addEventListener("click", async (e) => {
-    e.stopPropagation();
-    try {
-      const res = await fetch(src);
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
+      e.stopPropagation();
+      try {
+        const res = await fetch(src);
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
 
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "aurawall-ai.png";
-      document.body.appendChild(a);
-      a.click();
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "aurawall-ai.png";
+        document.body.appendChild(a);
+        a.click();
 
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Download failed", err);
-      alert("Download failed");
-    }
-  });
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error("Download failed", err);
+        alert("Download failed");
+      }
+    });
   }
 
-  /* (Optional) Share image file - shareBtn if present */
+  /* Append the image message to the chat and scroll into view */
+  chatArea.appendChild(fragment);
+  chatArea.scrollTop = chatArea.scrollHeight;
 };
 
 /* ---------- Generate ---------- */

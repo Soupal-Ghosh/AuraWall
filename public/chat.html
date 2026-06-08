@@ -2,27 +2,42 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- FIX: Missing viewport tag -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- FIX: SEO & OG tags -->
+    <meta name="description" content="Create stunning AI-generated wallpapers with AuraWall. Powered by Stable Diffusion." />
+    <meta property="og:title" content="AuraWall — AI Wallpaper Creator" />
+    <meta property="og:description" content="Describe any scene and get a unique wallpaper in seconds." />
+    <meta property="og:type" content="website" />
     <title>AuraWall – AI Create</title>
     <link rel="stylesheet" href="chat.css" />
   </head>
   <body>
     <!-- Top Bar -->
     <header class="topbar">
+      <!-- FIX: Back button to gallery -->
+      <a href="index.html" class="back-btn" aria-label="Back to gallery">&#8592; Gallery</a>
       <div class="logo">AuraWall</div>
+      <div class="subtitle">AI Wallpaper Creator</div>
     </header>
 
-    <!-- Main Content -->
-    <main class="chat-area">
+    <!-- Main Chat Area -->
+    <main class="chat-area" id="chatArea">
+      <!-- Placeholder shown before first generation -->
+      <div class="placeholder" id="placeholder">
+        <p>✨ Describe a scene and hit Generate</p>
+        <p style="font-size:14px; margin-top:8px;">e.g. "A neon-lit cyberpunk city at night, rain reflections"</p>
+      </div>
+
       <!-- IMAGE MESSAGE TEMPLATE -->
       <template id="imageMessageTemplate">
         <div class="message image">
           <img class="ai-image" src="" alt="Generated wallpaper" />
-
           <div class="image-actions hidden">
             <button class="button download-btn">
               <span class="button_lg">
                 <span class="button_sl"></span>
-                <span class="button_text">Download Now</span>
+                <span class="button_text">Download</span>
               </span>
             </button>
           </div>
@@ -32,11 +47,16 @@
 
     <!-- Prompt Input -->
     <footer class="prompt-bar">
-      <textarea
-        id="promptInput"
-        placeholder="Describe the wallpaper you want..."
-      ></textarea>
-      <button id="generateBtn">Generate</button>
+      <div class="input-wrapper">
+        <textarea
+          id="promptInput"
+          placeholder="Describe the wallpaper you want... (Ctrl+Enter to generate)"
+          maxlength="500"
+        ></textarea>
+        <!-- FIX: Character counter -->
+        <div class="char-counter"><span id="charCount">0</span>/500</div>
+      </div>
+      <button id="generateBtn" aria-label="Generate wallpaper">Generate</button>
     </footer>
 
     <script src="chat.js"></script>

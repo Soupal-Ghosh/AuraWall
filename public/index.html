@@ -3,17 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- FIX: SEO meta tags -->
-    <title>AuraWall — AI Wallpaper Generator & Gallery</title>
-    <meta name="description" content="Discover and download stunning wallpapers, or create your own with AI. Powered by Unsplash, Pexels, Pixabay and Stable Diffusion." />
-
-    <!-- FIX: Open Graph tags (for link previews on WhatsApp, LinkedIn etc) -->
-    <meta property="og:title" content="AuraWall — AI Wallpaper Generator" />
-    <meta property="og:description" content="Browse thousands of wallpapers or generate your own with AI." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://aurawall.onrender.com" />
-
+    <title>AuraWall</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -23,7 +13,6 @@
           <h1>AuraWall</h1>
         </div>
 
-        <!-- FIX: Added search button for mobile users who don't know to press Enter -->
         <div class="search-bar">
           <input
             id="searchInput"
@@ -31,7 +20,6 @@
             placeholder="Search for Wallpapers..."
             aria-label="Search wallpapers"
           />
-          <button id="searchBtn" class="search-btn" aria-label="Search">🔍</button>
         </div>
 
         <div class="AIcreate">
@@ -43,48 +31,27 @@
     </header>
 
     <main>
-      <!-- FIX: Loading spinner -->
-      <div id="loadingSpinner" class="spinner hidden" aria-live="polite" aria-label="Loading wallpapers">
-        <div class="spinner-ring"></div>
-        <p>Loading wallpapers...</p>
-      </div>
-
-      <!-- FIX: Empty state -->
-      <div id="emptyState" class="state-msg hidden">
-        <p>😕 No wallpapers found for "<span id="emptyQuery"></span>"</p>
-        <p>Try a different search term.</p>
-      </div>
-
-      <!-- FIX: Error state -->
-      <div id="errorState" class="state-msg hidden">
-        <p>⚠️ Something went wrong loading wallpapers.</p>
-        <button onclick="retryLoad()" class="retry-btn">Retry</button>
-      </div>
-
       <div class="grid" id="wallpaperGrid"></div>
     </main>
 
     <!-- Lightbox -->
-    <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true" aria-label="Wallpaper viewer">
-      <!-- FIX: Removed duplicate class="close" on inner img -->
-      <span class="close" onclick="closeLightbox()" aria-label="Close">
-        <img src="x.png" alt="Close" />
+    <div id="lightbox" class="lightbox hidden" role="dialog" aria-modal="true">
+      <span class="close" onclick="closeLightbox()">
+        <img class="close" src="x.png" alt="Close" />
       </span>
 
-      <!-- FIX: CSS now targets .arrow.prev / .arrow.next correctly -->
-      <span class="arrow prev" onclick="prevImage()" aria-label="Previous image">❮</span>
+      <span class="arrow prev" onclick="prevImage()">❮</span>
 
       <div class="lightbox-content">
         <img id="lightboxImg" src="" alt="Wallpaper" />
-        <div class="lightbox-actions">
-          <!-- FIX: Using ID selector now, consistent with JS -->
+        <div class="AIcreate">
           <button id="lightboxDownloadBtn" class="slice">
             <span class="text">Download</span>
           </button>
         </div>
       </div>
 
-      <span class="arrow next" onclick="nextImage()" aria-label="Next image">❯</span>
+      <span class="arrow next" onclick="nextImage()">❯</span>
     </div>
 
     <script src="script.js"></script>

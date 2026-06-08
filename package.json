@@ -13,9 +13,12 @@
   "description": "",
   "dependencies": {
     "bytez.js": "^3.0.0",
+    "compression": "^1.8.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.2.1",
+    "express-rate-limit": "^8.5.2",
+    "helmet": "^8.2.0",
     "nekosapi": "^0.6.4",
     "node-fetch": "^3.3.2"
   }
